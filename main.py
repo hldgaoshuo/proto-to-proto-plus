@@ -19,18 +19,20 @@ def proto_type_trans(name):
 
 class EvalVisitor(Protobuf3Visitor):
     def __init__(self):
+        self.index = 0
         self.result = 'import proto\n\n'
         self.field_type = ''
         self.field_name = ''
 
     def add(self, content):
-        # space = self.index * 4 * ' '
-        # self.result = self.result + space + content
-        self.result = self.result + content
+        space = self.index * 4 * ' '
+        self.result = self.result + space + content
 
     def visitMessageDef(self, ctx:Protobuf3Parser.MessageDefContext):
         self.add('class ')
+        self.index += 1
         self.visitChildren(ctx)
+        self.index -= 1
 
     def visitMessageName(self, ctx: Protobuf3Parser.MessageNameContext):
         name = ctx.getText()
