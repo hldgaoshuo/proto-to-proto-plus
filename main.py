@@ -8,14 +8,52 @@ def log(*args, **kwargs):
     print(*args, **kwargs, flush=True)
 
 
+def proto_type_trans(name):
+    d = {
+        'string': 'proto.STRING',
+        'int32': 'proto.INT32',
+    }
+    r = d.get(name, name)
+    return r
+
+
 class EvalVisitor(Protobuf3Visitor):
+    def __init__(self):
+        self.result = 'import proto\n\n'
+        self.field_type = ''
+        self.field_name = ''
+
+    def add(self, content):
+        # space = self.index * 4 * ' '
+        # self.result = self.result + space + content
+        self.result = self.result + content
+
+    def visitMessageDef(self, ctx:Protobuf3Parser.MessageDefContext):
+        self.add('class ')
+        self.visitChildren(ctx)
+
     def visitMessageName(self, ctx: Protobuf3Parser.MessageNameContext):
-        log(ctx.getText())
-        return self.visitChildren(ctx)
+        name = ctx.getText()
+        self.add(f'{name}(proto.Message):\n')
+        self.visitChildren(ctx)
+
+    def visitMessageBody(self, ctx:Protobuf3Parser.MessageBodyContext):
+        self.visitChildren(ctx)
+        self.add(f'{self.field_name} = ')
+        self.visitChildren(ctx)
+
+    def visitType_(self, ctx:Protobuf3Parser.Type_Context):
+        name = ctx.getText()
+        name_ = proto_type_trans(name)
+        self.field_type = name_
 
     def visitFieldName(self, ctx:Protobuf3Parser.FieldNameContext):
-        log(ctx.getText())
-        return self.visitChildren(ctx)
+        name = ctx.getText()
+        self.field_name = name
+
+    def visitFieldNumber(self, ctx:Protobuf3Parser.FieldNumberContext):
+        name = ctx.getText()
+        self.add(f'proto.Field({self.field_type}, number={name})\n')
 
 
 def __main():
@@ -26,6 +64,7 @@ def __main():
     ast = Protobuf3Parser(tokens).proto()
     visitor = EvalVisitor()
     visitor.visit(ast)
+    log(visitor.result)
 
 
 if __name__ == '__main__':
