@@ -1,3 +1,4 @@
+import proto
 import antlr4 as ant
 from Protobuf3Lexer import Protobuf3Lexer
 from Protobuf3Parser import Protobuf3Parser
@@ -10,8 +11,21 @@ def log(*args, **kwargs):
 
 def proto_type_trans(name):
     d = {
-        'string': 'proto.STRING',
+        'double': 'proto.DOUBLE',
+        'float': 'proto.FLOAT',
         'int32': 'proto.INT32',
+        'int64': 'proto.INT64',
+        'uint32': 'proto.UINT32',
+        'uint64': 'proto.UINT64',
+        'sint32': 'proto.SINT32',
+        'sint64': 'proto.SINT64',
+        'fixed32': 'proto.FIXED32',
+        'fixed64': 'proto.FIXED64',
+        'sfixed32': 'proto.SFIXED32',
+        'sfixed64': 'proto.SFIXED64',
+        'bool': 'proto.BOOL',
+        'string': 'proto.STRING',
+        'bytes': 'proto.BYTES',
     }
     r = d.get(name, name)
     return r
