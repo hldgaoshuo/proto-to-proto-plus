@@ -3,3 +3,8 @@ syntax = "proto3";
 message Hello {
   string world = 1;
 }
+
+//import proto
+//
+//class Hello(proto.Message):
+//    world = proto.Field(proto.STRING, number=1)

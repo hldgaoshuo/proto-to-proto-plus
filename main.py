@@ -28,34 +28,32 @@ class EvalVisitor(Protobuf3Visitor):
         space = self.index * 4 * ' '
         self.result = self.result + space + content
 
-    def visitMessageDef(self, ctx:Protobuf3Parser.MessageDefContext):
+    def visitMessageDef(self, ctx: Protobuf3Parser.MessageDefContext):
         self.add('class ')
-        self.index += 1
         self.visitChildren(ctx)
-        self.index -= 1
 
     def visitMessageName(self, ctx: Protobuf3Parser.MessageNameContext):
         name = ctx.getText()
         self.add(f'{name}(proto.Message):\n')
         self.visitChildren(ctx)
 
-    def visitMessageBody(self, ctx:Protobuf3Parser.MessageBodyContext):
+    def visitMessageBody(self, ctx: Protobuf3Parser.MessageBodyContext):
+        self.index += 1
         self.visitChildren(ctx)
-        self.add(f'{self.field_name} = ')
-        self.visitChildren(ctx)
+        self.index -= 1
 
-    def visitType_(self, ctx:Protobuf3Parser.Type_Context):
+    def visitType_(self, ctx: Protobuf3Parser.Type_Context):
         name = ctx.getText()
         name_ = proto_type_trans(name)
         self.field_type = name_
 
-    def visitFieldName(self, ctx:Protobuf3Parser.FieldNameContext):
+    def visitFieldName(self, ctx: Protobuf3Parser.FieldNameContext):
         name = ctx.getText()
         self.field_name = name
 
-    def visitFieldNumber(self, ctx:Protobuf3Parser.FieldNumberContext):
+    def visitFieldNumber(self, ctx: Protobuf3Parser.FieldNumberContext):
         name = ctx.getText()
-        self.add(f'proto.Field({self.field_type}, number={name})\n')
+        self.add(f'{self.field_name} = proto.Field({self.field_type}, number={name})\n')
 
 
 def __main():
