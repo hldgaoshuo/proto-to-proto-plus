@@ -1,4 +1,3 @@
-import proto
 import antlr4 as ant
 from Protobuf3Lexer import Protobuf3Lexer
 from Protobuf3Parser import Protobuf3Parser
@@ -55,6 +54,7 @@ class EvalVisitor(Protobuf3Visitor):
         self.index += 1
         self.visitChildren(ctx)
         self.index -= 1
+        self.add(f'\n\n')
 
     def visitType_(self, ctx: Protobuf3Parser.Type_Context):
         name = ctx.getText()

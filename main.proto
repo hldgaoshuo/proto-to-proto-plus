@@ -1,10 +1,45 @@
 syntax = "proto3";
 
-message Hello {
-  string world = 1;
+package ProtoAli;
+
+message Callback {
+  string phone_number = 1;
+  string send_time = 2;
+  string report_time = 3;
+  bool success = 4;
+  string err_code = 5;
+  string err_msg = 6;
+  string sms_size = 7;
+  string biz_id = 8;
+  string out_id = 9;
 }
 
-//import proto
-//
-//class Hello(proto.Message):
-//    world = proto.Field(proto.STRING, number=1)
+message SendVerifyCodeResponse {
+  string Message = 1;
+  string RequestId = 2;
+  string Code = 3;
+  string BizId = 4;
+}
+
+message SmsSendDetailDTO {
+  string ErrCode = 1;
+  string TemplateCode = 2;
+  string OutId = 3;
+  string ReceiveDate = 4;
+  string SendDate = 5;
+  string PhoneNum = 6;
+  string Content = 7;
+  int64 SendStatus = 8;
+}
+
+message SmsSendDetailDTOs {
+  repeated SmsSendDetailDTO SmsSendDetailDTO = 1;
+}
+
+message CheckStatusResponse {
+  string Code = 1;
+  string Message = 2;
+  string RequestId = 3;
+  int64 TotalCount = 4;
+  SmsSendDetailDTOs SmsSendDetailDTOs = 5;
+}
