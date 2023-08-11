@@ -33,7 +33,7 @@ def proto_type_trans(name):
 class EvalVisitor(Protobuf3Visitor):
     def __init__(self):
         self.index = 0
-        self.result = 'import proto\n\n'
+        self.result = 'import proto\n\n\n'
         self.field_type = ''
         self.field_name = ''
 
@@ -78,7 +78,8 @@ def __main():
     ast = Protobuf3Parser(tokens).proto()
     visitor = EvalVisitor()
     visitor.visit(ast)
-    log(visitor.result)
+    with open('main_proto.py', 'w') as f:
+        f.write(visitor.result)
 
 
 if __name__ == '__main__':
